@@ -56,13 +56,13 @@ export default class MicrophoneRecorder {
                         this.onStartCb();
                     }
                     
-                    this.mediaRecorder.onstop = () => this.onStop();
-                    this.mediaRecorder.ondataavailable = e => {
+                    this.mediaRecorder.addEventListener('stop', () => this.onStop());
+                    this.mediaRecorder.addEventListener('dataavailable', e => {
                         this.chunks.push(e.data);
                         if (this.onData) {
                             this.onData(e.data);
                         }
-                    };
+                    });
                     
                     this.mediaRecorder.start(10);
                     
