@@ -12,10 +12,10 @@ export default class ReactMicRecord extends React.Component {
         className: 'visualizer',
         audioBitsPerSecond: 128000,
         mimeType: 'audio/webm;codecs=opus',
-        record: false,
         width: 640,
         height: 100,
-        visualSetting: 'sinewave'
+        visualSetting: 'sinewave',
+        constraints: {}
     };
     
     constructor(props) {
@@ -24,6 +24,23 @@ export default class ReactMicRecord extends React.Component {
         this.microphoneRecorder = null;
         this.canvasRef = null;
         this.canvasCtx = null;
+    }
+
+    start(constraints) {
+        if (this.microphoneRecorder) {
+            this.microphoneRecorder.startRecording(constraints);
+            this.visualize();
+        }
+    }
+
+    stop() {
+        if (this.microphoneRecorder) {
+            this.microphoneRecorder.stopRecording();
+        }
+        if (this.visualizer) {
+            this.visualizer.stop();
+        }
+        this.clear();
     }
     
     componentDidMount() {
@@ -76,19 +93,7 @@ export default class ReactMicRecord extends React.Component {
     }
     
     render() {
-        const {record, width, height, className} = this.props;
-        
-        if (record) {
-            if (this.microphoneRecorder) {
-                this.microphoneRecorder.startRecording();
-                this.visualize();
-            }
-        } else {
-            if (this.microphoneRecorder) {
-                this.microphoneRecorder.stopRecording();
-                this.clear();
-            }
-        }
+        const {width, height, className} = this.props;
         
         return <canvas ref={c => this.canvasRef = c} height={height} width={width} className={className}/>;
     }

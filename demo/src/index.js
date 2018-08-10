@@ -12,28 +12,32 @@ export default class Demo extends Component {
             blobObject: null,
             isRecording: false
         }
+        this.recorder = null;
     }
     
     startRecording() {
+        if (this.recorder) {
+            this.recorder.start();
+        }
+    }
+    
+    stopRecording() {
+        if (this.recorder) {
+            this.recorder.stop();
+        }
+    }
+    
+    onStart() {
         this.setState({
             record: true,
             isRecording: true
         });
     }
     
-    stopRecording() {
-        this.setState({
-            record: false,
-            isRecording: false
-        });
-    }
-    
-    onStart() {
-        console.log('You can tap into the onStart callback');
-    }
-    
     onStop(blobObject) {
         this.setState({
+            record: false,
+            isRecording: false,
             blobURL: blobObject.blobURL
         });
     }
@@ -45,7 +49,7 @@ export default class Demo extends Component {
             <React.Fragment>
                 <ReactMicRecord
                     className="oscilloscope"
-                    record={this.state.record}
+                    ref={ref => this.recorder = ref}
                     backgroundColor="#2885c7"
                     audioBitsPerSecond={128000}
                     onStop={blobObject => this.onStop(blobObject)}
