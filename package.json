@@ -9,7 +9,8 @@
     "css",
     "es",
     "lib",
-    "umd"
+    "umd",
+    "src"
   ],
   "keywords": [
     "react",
