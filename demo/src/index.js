@@ -68,13 +68,7 @@ export default class Demo extends Component {
                             className="btn"
                             disabled={!isRecording}
                             onClick={() => this.stopRecording()}>
-                            Send
-                        </button>
-                        <button
-                            className="btn"
-                            disabled={!isRecording}
-                            onClick={() => this.stopRecording()}>
-                            Cancel
+                            Stop
                         </button>
                     </div>
                 }
