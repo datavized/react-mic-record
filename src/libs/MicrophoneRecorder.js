@@ -3,11 +3,6 @@ const constraints = {audio: true, video: false}; // constraints - only audio nee
 export default class MicrophoneRecorder {
     constructor(onStart, onStop, onData, options, audioContext) {
         
-        navigator.getUserMedia = (navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
-        
         this.audioCtx = audioContext.getAudioContext();
         this.analyser = audioContext.getAnalyser();
         this.stream = null;
