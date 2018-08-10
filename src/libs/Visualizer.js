@@ -20,6 +20,9 @@ export default class Visualizer {
         this.drawVisual = null;
     }
     
+    stop() {
+        cancelAnimationFrame(this.drawVisual);
+    }
     
     visualizeSineWave() {
         this.analyser.fftSize = 2048;

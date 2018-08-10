@@ -44,6 +44,9 @@ export default class ReactMicRecord extends React.Component {
     }
     
     componentWillUnmount() {
+        if (this.visualizer) {
+            this.visualizer.stop();
+        }
         if (this.microphoneRecorder) {
             this.microphoneRecorder.unMount();
             this.clear();
@@ -53,6 +56,10 @@ export default class ReactMicRecord extends React.Component {
     visualize() {
         const {backgroundColor, strokeColor, width, height, visualSetting} = this.props;
         
+        if (this.visualizer) {
+            this.visualizer.stop();
+        }
+
         this.visualizer = new Visualizer(this.audioContext, this.canvasCtx, this.canvasRef, width, height, backgroundColor, strokeColor);
         
         if (visualSetting === 'sinewave') {
