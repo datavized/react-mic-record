@@ -40,7 +40,6 @@ export default class ReactMicRecord extends React.Component {
         if (this.visualizer) {
             this.visualizer.stop();
         }
-        this.clear();
     }
     
     componentDidMount() {
@@ -66,7 +65,6 @@ export default class ReactMicRecord extends React.Component {
         }
         if (this.microphoneRecorder) {
             this.microphoneRecorder.unMount();
-            this.clear();
         }
     }
     
