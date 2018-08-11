@@ -15,36 +15,57 @@ export default class ReactMicRecord extends React.Component {
         width: 640,
         height: 100,
         visualSetting: 'sinewave',
-        constraints: {}
+        constraints: {},
+        keepMicOpen: false
     };
-    
+
     constructor(props) {
         super(props);
         this.audioContext = null;
         this.microphoneRecorder = null;
         this.canvasRef = null;
         this.canvasCtx = null;
+        this.state = {
+            recording: false
+        };
     }
 
-    start(constraints) {
-        if (this.microphoneRecorder) {
-            this.microphoneRecorder.startRecording(constraints);
+    start() {
+        if (this.microphoneRecorder && !this.state.recording) {
+            this.microphoneRecorder.startRecording(this.props.constraints);
             this.visualize();
+            this.setState({
+                recording: true
+            });
         }
     }
 
     stop() {
         if (this.microphoneRecorder) {
             this.microphoneRecorder.stopRecording();
+            if (!this.props.keepMicOpen) {
+                this.microphoneRecorder.stopMic();
+            }
         }
-        if (this.visualizer) {
+        if (this.visualizer && !this.props.keepMicOpen) {
             this.visualizer.stop();
         }
+        this.setState({
+            recording: false
+        });
     }
     
+    componentDidUpdate(prevProps) {
+        if (!this.state.recording && !this.props.keepMicOpen && this.microphoneRecorder) {
+            this.microphoneRecorder.stopMic();
+        } else {
+            this.visualize();
+        }
+    }
+
     componentDidMount() {
         
-        const {onStop, onStart, onData, audioElem, audioBitsPerSecond, mimeType} = this.props;
+        const {onStop, onStart, onData, audioElem, audioBitsPerSecond, mimeType, keepMicOpen} = this.props;
         const options = {audioBitsPerSecond, mimeType};
         this.canvasCtx = this.canvasRef.getContext("2d");
         
@@ -55,6 +76,10 @@ export default class ReactMicRecord extends React.Component {
         } else {
             this.microphoneRecorder = new MicrophoneRecorder(onStart, onStop, onData, options, this.audioContext);
         }
+
+        if (keepMicOpen && this.microphoneRecorder) {
+            this.microphoneRecorder.startMic(this.props.constraints);
+        }
         
         this.visualize();
     }
@@ -64,7 +89,7 @@ export default class ReactMicRecord extends React.Component {
             this.visualizer.stop();
         }
         if (this.microphoneRecorder) {
-            this.microphoneRecorder.unMount();
+            this.microphoneRecorder.stopMic();
         }
     }
     
