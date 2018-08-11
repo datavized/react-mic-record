@@ -33,13 +33,24 @@ export default class Demo extends Component {
             isRecording: true
         });
     }
+
+    cleanBlobUrl() {
+        if (this.state.blobURL) {
+            window.URL.revokeObjectURL(this.state.blobURL);
+        }
+    }
     
     onStop(blobObject) {
+        this.cleanBlobUrl();
         this.setState({
             record: false,
             isRecording: false,
-            blobURL: blobObject.blobURL
+            blobURL: window.URL.createObjectURL(blobObject.blob)
         });
+    }
+
+    componentWillUnMount() {
+        this.cleanBlobUrl();
     }
     
     render() {

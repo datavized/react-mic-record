@@ -97,8 +97,7 @@ export default class MicrophoneRecorder {
             blob,
             startTime: this.startTime,
             stopTime: Date.now(),
-            options: this.mediaOptions,
-            blobURL: window.URL.createObjectURL(blob)
+            options: this.mediaOptions
         };
         
         if (this.onStopCb) {
