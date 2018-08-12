@@ -45,6 +45,9 @@ export default class ReactMicRecord extends React.Component {
             this.microphoneRecorder.stopRecording();
             if (!this.props.keepMicOpen) {
                 this.microphoneRecorder.stopMic();
+                if (this.props.stopMic) {
+                    this.props.stopMic();
+                }
             }
         }
         if (this.visualizer && !this.props.keepMicOpen) {
@@ -58,14 +61,31 @@ export default class ReactMicRecord extends React.Component {
     componentDidUpdate(prevProps) {
         if (!this.state.recording && !this.props.keepMicOpen && this.microphoneRecorder) {
             this.microphoneRecorder.stopMic();
+            if (this.props.stopMic) {
+                this.props.stopMic();
+            }
         } else {
             this.visualize();
+        }
+        if (this.microphoneRecorder) {
+            this.microphoneRecorder.onStartMic = this.props.onStartMic;
         }
     }
 
     componentDidMount() {
         
-        const {onStop, onStart, onData, audioElem, audioBitsPerSecond, mimeType, keepMicOpen} = this.props;
+        const {
+            onStop,
+            onStart,
+            onStartMic,
+            onStopMic,
+            onData,
+            audioElem,
+            audioBitsPerSecond,
+            mimeType,
+            keepMicOpen
+        } = this.props;
+
         const options = {audioBitsPerSecond, mimeType};
         this.canvasCtx = this.canvasRef.getContext("2d");
         
@@ -75,6 +95,7 @@ export default class ReactMicRecord extends React.Component {
             this.audioPlayer = new AudioPlayer(audioElem, this.audioContext);
         } else {
             this.microphoneRecorder = new MicrophoneRecorder(onStart, onStop, onData, options, this.audioContext);
+            this.microphoneRecorder.onStartMic = onStartMic;
         }
 
         if (keepMicOpen && this.microphoneRecorder) {
@@ -90,6 +111,9 @@ export default class ReactMicRecord extends React.Component {
         }
         if (this.microphoneRecorder) {
             this.microphoneRecorder.stopMic();
+            if (this.props.stopMic) {
+                this.props.stopMic();
+            }
         }
     }
     

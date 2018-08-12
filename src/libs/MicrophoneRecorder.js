@@ -6,6 +6,7 @@ export default class MicrophoneRecorder {
         this.stream = null;
         this.onStartCb = onStart;
         this.onStopCb = onStop;
+        this.onStartMic = null;
         this.mediaOptions = options;
         this.onData = onData;
         this.chunks = [];
@@ -34,6 +35,10 @@ export default class MicrophoneRecorder {
                 if (this.audioCtx && this.audioCtx.state === 'suspended') {
                     console.log('resuming audio context');
                     this.audioCtx.resume();
+                }
+
+                if (this.onStartMic) {
+                    this.onStartMic(str);
                 }
 
                 return str;
