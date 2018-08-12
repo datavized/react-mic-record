@@ -89,6 +89,7 @@ export default class MicrophoneRecorder {
         console.log('suspending audio context');
         this.audioCtx.suspend();
         this.stream && this.stream.getTracks()[0].stop();
+        this.stream = null;
         this.mediaRecorder = null;
     }
     
