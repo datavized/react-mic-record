@@ -99,20 +99,19 @@ export default class MicrophoneRecorder {
     }
     
     onStop() {
-        const blob = new Blob(this.chunks, {'type': this.mediaOptions.mimeType});
-        this.chunks = [];
-        
-        const blobObject = {
-            blob,
-            startTime: this.startTime,
-            stopTime: Date.now(),
-            options: this.mediaOptions
-        };
-        
         if (this.onStopCb) {
+            const blob = new Blob(this.chunks, {'type': this.mediaOptions.mimeType});
+
+            const blobObject = {
+                blob,
+                startTime: this.startTime,
+                stopTime: Date.now(),
+                options: this.mediaOptions
+            };
+
             this.onStopCb(blobObject);
         }
-        
+        this.chunks = [];
     }
     
 }
