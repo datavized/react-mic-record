@@ -3,6 +3,7 @@ import MicrophoneRecorder from '../libs/MicrophoneRecorder';
 import AudioContext from '../libs/AudioContext';
 import AudioPlayer from '../libs/AudioPlayer';
 import Visualizer from '../libs/Visualizer';
+import equal from '../libs/equal';
 
 export default class ReactMicRecord extends React.Component {
     
@@ -69,6 +70,13 @@ export default class ReactMicRecord extends React.Component {
         }
         if (this.microphoneRecorder) {
             this.microphoneRecorder.onStartMic = this.props.onStartMic;
+
+            if (!this.state.recording && !equal(this.props.constraints, prevProps.constraints)) {
+                this.microphoneRecorder.stopMic();
+                if (this.props.keepMicOpen) {
+                    this.microphoneRecorder.startMic(this.props.constraints);
+                }
+            }
         }
     }
 
@@ -101,7 +109,7 @@ export default class ReactMicRecord extends React.Component {
         if (keepMicOpen && this.microphoneRecorder) {
             this.microphoneRecorder.startMic(this.props.constraints);
         }
-        
+
         this.visualize();
     }
     
