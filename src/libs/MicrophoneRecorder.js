@@ -31,6 +31,8 @@ export default class MicrophoneRecorder {
                     this.stream.getTracks().forEach(track => track.stop());
                 }
 
+                this.stream = str;
+
                 const source = this.audioCtx.createMediaStreamSource(this.stream);
                 source.connect(this.analyser);
 
