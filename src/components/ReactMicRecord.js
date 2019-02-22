@@ -74,7 +74,12 @@ export default class ReactMicRecord extends React.Component {
             if (!this.state.recording && !equal(this.props.constraints, prevProps.constraints)) {
                 this.microphoneRecorder.stopMic();
                 if (this.props.keepMicOpen) {
-                    this.microphoneRecorder.startMic(this.props.constraints);
+                    this.microphoneRecorder.startMic(this.props.constraints)
+                        .catch(error => {
+                            if (this.props.onError) {
+                                this.props.onError(error);
+                            }
+                        });
                 }
             }
         }
@@ -107,7 +112,12 @@ export default class ReactMicRecord extends React.Component {
         }
 
         if (keepMicOpen && this.microphoneRecorder) {
-            this.microphoneRecorder.startMic(this.props.constraints);
+            this.microphoneRecorder.startMic(this.props.constraints)
+                .catch(error => {
+                    if (this.props.onError) {
+                        this.props.onError(error);
+                    }
+                });
         }
 
         this.visualize();
