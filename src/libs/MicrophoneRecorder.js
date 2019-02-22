@@ -20,10 +20,18 @@ export default class MicrophoneRecorder {
         }
 
         if (navigator.mediaDevices) {
+            const {
+                audio,
+                ...otherConstraints
+            } = constraintOpts || {};
+
             const constraints = {
-                audio: true,
-                ...constraintOpts,
-                video: false
+                ...otherConstraints,
+                video: false,
+                audio: {
+                    ...audio,
+                    sampleRate: this.audioCtx.sampleRate
+                }
             };
             return navigator.mediaDevices.getUserMedia(constraints).then(str => {
                 if (this.stream) {
