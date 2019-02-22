@@ -4,6 +4,7 @@ export default class MicrophoneRecorder {
         this.audioCtx = audioContext.getAudioContext();
         this.analyser = audioContext.getAnalyser();
         this.stream = null;
+        this.source = null;
         this.onStartCb = onStart;
         this.onStopCb = onStop;
         this.onStartMic = null;
@@ -30,11 +31,15 @@ export default class MicrophoneRecorder {
                     // so cancel the original call
                     this.stream.getTracks().forEach(track => track.stop());
                 }
+                if (this.source) {
+                    // disconnect previous source from analyser
+                    this.source.disconnect();
+                }
 
                 this.stream = str;
 
-                const source = this.audioCtx.createMediaStreamSource(this.stream);
-                source.connect(this.analyser);
+                this.source = this.audioCtx.createMediaStreamSource(this.stream);
+                this.source.connect(this.analyser);
 
                 if (this.audioCtx && this.audioCtx.state === 'suspended') {
                     this.audioCtx.resume();
@@ -125,6 +130,9 @@ export default class MicrophoneRecorder {
         this.stopRecording();
         this.stopMic();
 
+        if (this.source) {
+            this.source.disconnect();
+        }
         if (this.audioCtx) {
             this.audioCtx.close();
             this.audioCtx = null;
