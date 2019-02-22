@@ -118,7 +118,8 @@ export default class ReactMicRecord extends React.Component {
             this.visualizer.stop();
         }
         if (this.microphoneRecorder) {
-            this.microphoneRecorder.stopMic();
+            this.microphoneRecorder.destroy();
+            this.microphoneRecorder = null;
             if (this.props.stopMic) {
                 this.props.stopMic();
             }

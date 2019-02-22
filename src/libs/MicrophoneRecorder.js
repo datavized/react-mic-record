@@ -25,15 +25,16 @@ export default class MicrophoneRecorder {
                 video: false
             };
             return navigator.mediaDevices.getUserMedia(constraints).then(str => {
-
-                this.stream = str;
+                if (this.stream) {
+                    // someone called startMic again before it resolved
+                    // so cancel the original call
+                    this.stream.getTracks().forEach(track => track.stop());
+                }
 
                 const source = this.audioCtx.createMediaStreamSource(this.stream);
                 source.connect(this.analyser);
 
-                console.log('got mic', this.audioCtx.state);
                 if (this.audioCtx && this.audioCtx.state === 'suspended') {
-                    console.log('resuming audio context');
                     this.audioCtx.resume();
                 }
 
@@ -70,7 +71,6 @@ export default class MicrophoneRecorder {
             }
                     
             if (this.mediaRecorder && this.mediaRecorder.state === 'paused') {
-                console.log('resuming mediaRecorder');
                 this.mediaRecorder.resume();
                 return;
             }
@@ -91,9 +91,14 @@ export default class MicrophoneRecorder {
     }
     
     stopMic() {
-        console.log('suspending audio context');
-        this.audioCtx.suspend();
-        this.stream && this.stream.getTracks()[0].stop();
+        this.stopRecording();
+        if (this.audioCtx) {
+            this.audioCtx.suspend();
+        }
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.stream = null;
+        }
         this.stream = null;
         this.mediaRecorder = null;
     }
@@ -112,6 +117,20 @@ export default class MicrophoneRecorder {
             this.onStopCb(blobObject);
         }
         this.chunks = [];
+    }
+
+    destroy() {
+        this.stopRecording();
+        this.stopMic();
+
+        if (this.audioCtx) {
+            this.audioCtx.close();
+            this.audioCtx = null;
+        }
+        if (this.analyser) {
+            this.analyser.disconnect();
+            this.analyser = null;
+        }
     }
     
 }
