@@ -33,7 +33,12 @@ export default class MicrophoneRecorder {
                     sampleRate: this.audioCtx.sampleRate
                 }
             };
-            return navigator.mediaDevices.getUserMedia(constraints).then(str => {
+            return navigator.mediaDevices.getUserMedia(constraints).catch(err => {
+                return navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: false
+                });
+            }).then(str => {
                 if (this.stream) {
                     // someone called startMic again before it resolved
                     // so cancel the original call
